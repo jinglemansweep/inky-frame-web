@@ -1,0 +1,29 @@
+[general]
+  # device_id = "lounge"
+  # debug = false
+  # log_level = "debug" # info, debug
+
+[display]
+  # width = 768 # 64 * 12
+  # height = 64
+
+[slideshow]
+  # delay = 30
+
+[mqtt]
+  # host = "hass.local"
+  # port = 1883
+  # user = "user"
+  # password = "password"
+  # keepalive = 60
+  # log_messages = false
+
+[mqtt.topic_prefix]
+  # app = "inkyframeweb"
+
+[mqtt.topic_prefix.homeassistant]
+  # default = "homeassistant"
+  # statestream = "homeassistant/statestream"
+
+[paths]
+  # images = "images"
