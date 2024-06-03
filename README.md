@@ -1,6 +1,6 @@
 # Inky Frame Web
 
-![Inky Frame Web](./docs/logos/logo-small.png)
+![Inky Frame Web](./docs/logos/logo-medium.png)
 
 [![docker](https://github.com/jinglemansweep/inky-frame-web/actions/workflows/docker.yml/badge.svg)](https://github.com/jinglemansweep/inky-frame-web/actions/workflows/docker.yml) [![mypy](https://github.com/jinglemansweep/inky-frame-web/actions/workflows/mypy.yml/badge.svg)](https://github.com/jinglemansweep/inky-frame-web/actions/workflows/mypy.yml) [![flake8](https://github.com/jinglemansweep/inky-frame-web/actions/workflows/flake8.yml/badge.svg)](https://github.com/jinglemansweep/inky-frame-web/actions/workflows/flake8.yml) [![black](https://github.com/jinglemansweep/inky-frame-web/actions/workflows/black.yml/badge.svg)](https://github.com/jinglemansweep/inky-frame-web/actions/workflows/black.yml) [![codeql](https://github.com/jinglemansweep/inky-frame-web/actions/workflows/codeql.yml/badge.svg)](https://github.com/jinglemansweep/inky-frame-web/actions/workflows/codeql.yml) [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
