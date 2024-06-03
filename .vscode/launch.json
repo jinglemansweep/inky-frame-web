@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Inky Frame Web",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "inkyframeweb",
+      "justMyCode": true,
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart"
+    }
+  ]
+}

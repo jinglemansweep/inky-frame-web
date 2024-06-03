@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "inkyframeweb"
+version = "0.1.0"
+description = "Inky Frame Web Controller"
+authors = ["Louis King <jinglemansweep@gmail.com>"]
+readme = "README.md"
+packages = []
+
+[tool.poetry.dependencies]
+python = ">=3.9,<4.0"
+paho-mqtt = "^1.6.1"
+dynaconf = "^3.1.12"
+toml = "^0.10.2"
+flask = "^3.0.3"
+pillow = "^10.3.0"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.1.0"
+flake8 = "^6.0.0"
+mypy = "^1.0.0"
+pre-commit = "^3.6.0"
+types-flask = "^1.1.6"
+types-paho-mqtt = "^1.6.0.5"
+types-toml = "^0.10.8.20240310"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
