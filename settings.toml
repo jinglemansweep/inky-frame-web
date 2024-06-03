@@ -20,7 +20,7 @@
   #   name = "inkyframe7"
   #   width = 800
   #   height = 480
-  #   image_path = "images"
+  #   image_path = "images/samples"
   #   delay = 600
   # [outputs.1]
   #   ...
@@ -42,6 +42,3 @@
 [mqtt.topic_prefix.homeassistant]
   # default = "homeassistant"
   # statestream = "homeassistant/statestream"
-
-[paths]
-  # images = "images"

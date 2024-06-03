@@ -28,7 +28,7 @@ Web-based remote photo frame slideshow and gallery manager for use with e-ink di
 Pull and start the container image specifying a port and a volume for your photos/images:
 
     docker run -d --name inkyframeweb \
-      -v ${PWD}/images:/data/images \
+      -v ${PWD}/images/samples:/data/images \
       -p 5665:5665 \
       ghcr.io/jinglemansweep/inky-frame-web:main
 
@@ -53,3 +53,7 @@ To run the project:
 
     . venv/bin/activate
     python3 -m inkyframeweb
+
+## Acknowledgements
+
+- Sample photos generated and provided by [Dall-E 2](https://openai.com/index/dall-e-2/)
