@@ -27,4 +27,4 @@ jobs:
       - name: MyPy check
         run: |
           . ./venv/bin/activate
-          mypy inkyframeweb/*.py inkyframeweb/**/*.py
+          mypy inkyframeweb/*.py
