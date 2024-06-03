@@ -3,12 +3,17 @@
   # debug = false
   # log_level = "debug" # info, debug
 
+[web]
+  # host = "0.0.0.0"
+  # port = 5665
+
 [display]
   # width = 768 # 64 * 12
   # height = 64
 
 [slideshow]
   # delay = 30
+  # time_format = "%Y-%m-%d %H:%M:%S"
 
 [mqtt]
   # host = "hass.local"
