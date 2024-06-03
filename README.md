@@ -6,9 +6,10 @@ Web-based remote photo frame slideshow and gallery manager for use with simple s
 
 ## Features
 
+- :photo: Photo and image slideshow management
 - :alarm_clock: Clock overlay
 - :calendar: Calendar overlay
 - :sunny: Weather summary and next hour forecast
 - :incoming_envelope: Announcements and notifications via [MQTT](https://en.wikipedia.org/wiki/MQTT)
 - :satellite: Remote control via MQTT and [Home Assistant](https://www.home-assistant.io/)
-- :snake: Written in Python and MicroPython
+- :snake: Written with [Python](https://www.python.org/), [Flask](https://flask.palletsprojects.com/) and [MicroPython](https://micropython.org/)
