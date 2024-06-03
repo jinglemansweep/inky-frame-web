@@ -65,11 +65,11 @@ def overlay_text(
     )
 
 
-def overlay_time(image: Image.Image, config: Dynaconf) -> None:
+def overlay_time(image: Image.Image, time_format: str) -> None:
     now = datetime.now()
     overlay_text(
         image,
-        now.strftime(config.slideshow.time_format),
+        now.strftime(time_format),
         position=(20, 20),
         font_size=72,
         align="center",
@@ -79,11 +79,11 @@ def overlay_time(image: Image.Image, config: Dynaconf) -> None:
     )
 
 
-def overlay_date(image: Image.Image, config: Dynaconf) -> None:
+def overlay_date(image: Image.Image, date_format: str) -> None:
     now = datetime.now()
     overlay_text(
         image,
-        now.strftime(config.slideshow.date_format),
+        now.strftime(date_format),
         position=(20, 100),
         font_size=48,
         align="center",
@@ -116,19 +116,18 @@ def overlay_watermark(image: Image.Image, config: Dynaconf) -> None:
 def render_image(
     image_file: Path,
     config: Dynaconf,
+    size: tuple[int, int],
     show_date: bool = True,
     show_time: bool = True,
     show_watermark: bool = True,
 ) -> io.BytesIO:
     # Load and resize image
-    image = load_and_resize_image(
-        image_file, (config.display.width, config.display.height)
-    )
+    image = load_and_resize_image(image_file, size)
     # Overlay calendar and clock
     if show_date:
-        overlay_date(image, config)
+        overlay_date(image, config.locale.date_format)
     if show_time:
-        overlay_time(image, config)
+        overlay_time(image, config.locale.time_format)
     # Overlay watermark
     if show_watermark:
         overlay_watermark(image, config)

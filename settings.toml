@@ -6,15 +6,27 @@
   # host = "0.0.0.0"
   # port = 5665
 
+[locale]
+  # date_format = "%d %B %Y"
+  # time_format = "%H:%M"
+
 [display]
   # Inky Frame 7.3: 800w x 480h
   # width = 800
   # height = 480
 
-[slideshow]
-  # delay = 600
-  # date_format = "%d %B %Y"
-  # time_format = "%H:%M"
+[outputs]
+  # [outputs.0]
+  #   name = "inkyframe7"
+  #   width = 800
+  #   height = 480
+  #   image_path = "images"
+  #   delay = 600
+  # [outputs.1]
+  #   ...
+  # [outputs.2]
+  #   ...
+
 
 [mqtt]
   # host = "hass.local"
