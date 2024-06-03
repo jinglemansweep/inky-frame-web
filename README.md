@@ -6,7 +6,7 @@ Web-based remote photo frame slideshow and gallery manager for use with e-ink di
 
 ## Features
 
-- :photo: Photo and image slideshow management
+- :camera: Photo and image slideshow management
 - :alarm_clock: Clock overlay
 - :calendar: Calendar overlay
 - :sunny: Weather summary and next hour forecast
