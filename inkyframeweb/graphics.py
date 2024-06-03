@@ -6,7 +6,7 @@ from typing import List, Optional
 from flask import send_file, make_response
 from PIL import Image, ImageDraw, ImageFont
 from werkzeug.http import generate_etag
-from . import _APP_TITLE, _APP_VERSION, _APP_REPO
+from . import _APP_TITLE, _APP_REPO
 
 
 def glob_images(
@@ -65,21 +65,7 @@ def overlay_text(
     )
 
 
-def overlay_time(image: Image.Image, time_format: str) -> None:
-    now = datetime.now()
-    overlay_text(
-        image,
-        now.strftime(time_format),
-        position=(20, 20),
-        font_size=72,
-        align="center",
-        color="white",
-        stroke_color="black",
-        stroke_width=4,
-    )
-
-
-def overlay_date(image: Image.Image, date_format: str) -> None:
+def overlay_date(image: Image.Image, size: tuple[int, int], date_format: str) -> None:
     now = datetime.now()
     overlay_text(
         image,
@@ -93,13 +79,27 @@ def overlay_date(image: Image.Image, date_format: str) -> None:
     )
 
 
-def overlay_watermark(image: Image.Image, config: Dynaconf) -> None:
+def overlay_time(image: Image.Image, size: tuple[int, int], time_format: str) -> None:
+    now = datetime.now()
+    overlay_text(
+        image,
+        now.strftime(time_format),
+        position=(20, 20),
+        font_size=72,
+        align="center",
+        color="white",
+        stroke_color="black",
+        stroke_width=4,
+    )
+
+
+def overlay_watermark(image: Image.Image, size: tuple[int, int]) -> None:
     # Overlay watermark
     overlay_text(
         image,
-        f"{_APP_TITLE} v{_APP_VERSION}",
-        position=(config.display.width - 380, config.display.height - 65),
-        font_size=32,
+        _APP_TITLE,
+        position=(size[0] - 200, size[1] - 36),
+        font_size=24,
         color="yellow",
         stroke_color="black",
         stroke_width=2,
@@ -107,9 +107,11 @@ def overlay_watermark(image: Image.Image, config: Dynaconf) -> None:
     overlay_text(
         image,
         _APP_REPO,
-        position=(config.display.width - 405, config.display.height - 30),
-        font_size=18,
-        color="black",
+        position=(size[0] - 230, size[1] - 12),
+        font_size=10,
+        color="white",
+        stroke_color="black",
+        stroke_width=1,
     )
 
 
@@ -125,12 +127,12 @@ def render_image(
     image = load_and_resize_image(image_file, size)
     # Overlay calendar and clock
     if show_date:
-        overlay_date(image, config.locale.date_format)
+        overlay_date(image, size, config.locale.date_format)
     if show_time:
-        overlay_time(image, config.locale.time_format)
+        overlay_time(image, size, config.locale.time_format)
     # Overlay watermark
     if show_watermark:
-        overlay_watermark(image, config)
+        overlay_watermark(image, size)
     # Return image bytes
     return pil_to_bytes(image, "JPEG", False)
 
