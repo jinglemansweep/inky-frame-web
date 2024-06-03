@@ -11,7 +11,7 @@ from .graphics import (
     render_image,
     build_response,
 )
-from .slideshow import Slideshow
+from .outputs import OutputDisplay
 from .utils import setup_logger
 
 config = Dynaconf(
@@ -23,32 +23,24 @@ config = Dynaconf(
 setup_logger(config)
 logger = logging.getLogger(__name__)
 logger.info(f"{_APP_TITLE} v{_APP_VERSION} starting up...")
-logger.info(f"config: {config.as_dict()}")
+logger.debug(f"Configuration: {config.as_dict()}")
 
 app = Flask(__name__)
 
-slideshows: List[Slideshow] = []
-
-# image_files = glob_images(config.paths.images)
-# slideshow = Slideshow(image_files, config.slideshow.delay)
+output_displays: List[OutputDisplay] = []
 
 for output in config.outputs.values():
-    print(output.name, output)
     image_files = glob_images(Path(output.image_path))
-    slideshows.append(
-        Slideshow(
-            image_files,
-            (int(output.width), int(output.height)),
-            output.delay,
-            output.show_date,
-            output.show_time,
-            output.show_watermark,
-        )
+    output_display = OutputDisplay(
+        image_files,
+        (int(output.width), int(output.height)),
+        output.delay,
+        output.show_date,
+        output.show_time,
+        output.show_watermark,
     )
-
-show_date = True
-show_time = True
-show_watermark = True
+    logger.info(f"Output Display: {output_display}")
+    output_displays.append(output_display)
 
 
 @app.route("/")
@@ -62,16 +54,17 @@ def handle_output(output: str):
     if output not in config.outputs:
         return "Output not found", 404
     output_idx = int(output)
-    slideshow = slideshows[output_idx]
-    if slideshow.should_advance(int(datetime.now().timestamp())):
-        slideshow.next()
+    output_display = output_displays[output_idx]
+    if output_display.should_advance(int(datetime.now().timestamp())):
+        logger.info(f"Advancing Display: {output_display}")
+        output_display.next()
     image_bytes = render_image(
-        slideshow.image_file,
+        output_display.image_file,
         config,
-        slideshow.image_size,
-        slideshow.show_date,
-        slideshow.show_time,
-        slideshow.show_watermark,
+        output_display.image_size,
+        output_display.show_date,
+        output_display.show_time,
+        output_display.show_watermark,
     )
     return build_response(image_bytes)
 

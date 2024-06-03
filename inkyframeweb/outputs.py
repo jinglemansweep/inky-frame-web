@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import List
 
 
-class Slideshow:
+class OutputDisplay:
     def __init__(
         self,
         image_files: List[Path],
@@ -40,3 +40,20 @@ class Slideshow:
     @property
     def image_file(self) -> Path:
         return self.image_files[self.image_index]
+
+    def __repr__(self) -> str:
+        return (
+            "<OutputDisplay items="
+            + str(len(self.image_files))
+            + " size="
+            + str(self.image_size)
+            + " delay="
+            + str(self.delay)
+            + " show_date="
+            + str(self.show_date)
+            + " show_time="
+            + str(self.show_time)
+            + " show_watermark="
+            + str(self.show_watermark)
+            + ">"
+        )
