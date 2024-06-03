@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime
 from dynaconf import Dynaconf
-from flask import Flask
+from flask import Flask, jsonify
 from . import _APP_NAME, _APP_TITLE, _APP_VERSION
 from .config import VALIDATORS
 from .graphics import (
@@ -28,13 +28,25 @@ app = Flask(__name__)
 image_files = glob_images(config.paths.images)
 slideshow = Slideshow(image_files, config.slideshow.delay)
 
+show_date = True
+show_time = True
+show_watermark = True
+
 
 @app.route("/")
 def home():
     if slideshow.should_advance(int(datetime.now().timestamp())):
         slideshow.next()
-    image_bytes = render_image(slideshow.image_file, config)
+    image_bytes = render_image(
+        slideshow.image_file, config, show_date, show_time, show_watermark
+    )
     return build_response(image_bytes)
+
+
+@app.route("/status/health")
+def health():
+    healthy = True
+    return jsonify({"healthy": healthy})
 
 
 if __name__ == "__main__":

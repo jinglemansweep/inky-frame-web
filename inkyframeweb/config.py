@@ -16,20 +16,21 @@ VALIDATORS = [
     ),
     Validator(
         "DISPLAY__HEIGHT",
-        default=600,
+        default=480,
         cast=int,
     ),
     # Slideshow
     Validator(
         "SLIDESHOW__DELAY",
-        default=5,
+        default=600,
         cast=int,
     ),
-    Validator("SLIDESHOW__TIME_FORMAT", default="%Y-%m-%d %H:%M:%S"),
+    Validator("SLIDESHOW__DATE_FORMAT", default="%d %B %Y"),
+    Validator("SLIDESHOW__TIME_FORMAT", default="%H:%M"),
     # MQTT
     Validator(
         "MQTT__HOST",
-        required=True,
+        default="homeassistant.local",
         cast=str,
     ),
     Validator(

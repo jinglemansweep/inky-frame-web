@@ -6,7 +6,7 @@ from typing import List, Optional
 from flask import send_file, make_response
 from PIL import Image, ImageDraw, ImageFont
 from werkzeug.http import generate_etag
-from . import _APP_TITLE, _APP_VERSION
+from . import _APP_TITLE, _APP_VERSION, _APP_REPO
 
 
 def glob_images(
@@ -65,13 +65,8 @@ def overlay_text(
     )
 
 
-def render_image(image_file: Path, config: Dynaconf):
+def overlay_time(image: Image.Image, config: Dynaconf) -> None:
     now = datetime.now()
-    # Load and resize image
-    image = load_and_resize_image(
-        image_file, (config.display.width, config.display.height)
-    )
-    # Overlay timestamp
     overlay_text(
         image,
         now.strftime(config.slideshow.time_format),
@@ -82,17 +77,61 @@ def render_image(image_file: Path, config: Dynaconf):
         stroke_color="black",
         stroke_width=4,
     )
+
+
+def overlay_date(image: Image.Image, config: Dynaconf) -> None:
+    now = datetime.now()
+    overlay_text(
+        image,
+        now.strftime(config.slideshow.date_format),
+        position=(20, 100),
+        font_size=48,
+        align="center",
+        color="white",
+        stroke_color="black",
+        stroke_width=4,
+    )
+
+
+def overlay_watermark(image: Image.Image, config: Dynaconf) -> None:
     # Overlay watermark
     overlay_text(
         image,
         f"{_APP_TITLE} v{_APP_VERSION}",
-        position=(config.display.width - 380, config.display.height - 35),
+        position=(config.display.width - 380, config.display.height - 65),
         font_size=32,
-        align="center",
-        color="red",
+        color="yellow",
         stroke_color="black",
         stroke_width=2,
     )
+    overlay_text(
+        image,
+        _APP_REPO,
+        position=(config.display.width - 405, config.display.height - 30),
+        font_size=18,
+        color="black",
+    )
+
+
+def render_image(
+    image_file: Path,
+    config: Dynaconf,
+    show_date: bool = True,
+    show_time: bool = True,
+    show_watermark: bool = True,
+) -> io.BytesIO:
+    # Load and resize image
+    image = load_and_resize_image(
+        image_file, (config.display.width, config.display.height)
+    )
+    # Overlay calendar and clock
+    if show_date:
+        overlay_date(image, config)
+    if show_time:
+        overlay_time(image, config)
+    # Overlay watermark
+    if show_watermark:
+        overlay_watermark(image, config)
     # Return image bytes
     return pil_to_bytes(image, "JPEG", False)
 
