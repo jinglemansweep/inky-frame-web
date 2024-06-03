@@ -3,7 +3,6 @@ from pathlib import Path
 
 VALIDATORS = [
     # General
-    Validator("GENERAL__DEVICE_ID", default=None),
     Validator("GENERAL__DEBUG", default=False, cast=bool),
     Validator("GENERAL__LOG_LEVEL", default="info"),  # error, warning, info, debug
     # Web

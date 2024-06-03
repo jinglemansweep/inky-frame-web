@@ -1,5 +1,4 @@
 [general]
-  # device_id = "lounge"
   # debug = false
   # log_level = "debug" # info, debug
 
@@ -8,8 +7,8 @@
   # port = 5665
 
 [display]
-  # width = 768 # 64 * 12
-  # height = 64
+  # width = 800
+  # height = 600
 
 [slideshow]
   # delay = 30
