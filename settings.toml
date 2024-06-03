@@ -7,12 +7,14 @@
   # port = 5665
 
 [display]
+  # Inky Frame 7.3: 800w x 480h
   # width = 800
-  # height = 600
+  # height = 480
 
 [slideshow]
-  # delay = 30
-  # time_format = "%Y-%m-%d %H:%M:%S"
+  # delay = 600
+  # date_format = "%d %B %Y"
+  # time_format = "%H:%M"
 
 [mqtt]
   # host = "hass.local"
