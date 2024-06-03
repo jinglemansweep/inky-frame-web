@@ -13,6 +13,8 @@ Web-based remote photo frame slideshow and gallery manager for use with e-ink di
 
 ## Coming Soon
 
+- :cinema: Multiple display support
+- :radio_button: Hardware button support
 - :sunny: Weather summary and next hour forecast
 - :incoming_envelope: Announcements and notifications via [MQTT](https://en.wikipedia.org/wiki/MQTT)
 - :satellite: Remote control via MQTT and [Home Assistant](https://www.home-assistant.io/)
