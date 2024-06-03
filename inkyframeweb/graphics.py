@@ -6,7 +6,10 @@ from typing import List, Optional
 from flask import send_file, make_response
 from PIL import Image, ImageDraw, ImageFont
 from werkzeug.http import generate_etag
-from . import _APP_TITLE, _APP_REPO
+from . import _APP_TITLE
+
+DATE_POSITION = (20, 20)
+TIME_POSITION = (20, 120)
 
 
 def glob_images(
@@ -70,7 +73,7 @@ def overlay_date(image: Image.Image, size: tuple[int, int], date_format: str) ->
     overlay_text(
         image,
         now.strftime(date_format),
-        position=(20, 100),
+        position=DATE_POSITION,
         font_size=48,
         align="center",
         color="white",
@@ -84,7 +87,7 @@ def overlay_time(image: Image.Image, size: tuple[int, int], time_format: str) ->
     overlay_text(
         image,
         now.strftime(time_format),
-        position=(20, 20),
+        position=TIME_POSITION,
         font_size=72,
         align="center",
         color="white",
@@ -98,20 +101,11 @@ def overlay_watermark(image: Image.Image, size: tuple[int, int]) -> None:
     overlay_text(
         image,
         _APP_TITLE,
-        position=(size[0] - 200, size[1] - 36),
-        font_size=24,
+        position=(size[0] - 120, size[1] - 18),
+        font_size=14,
         color="yellow",
         stroke_color="black",
         stroke_width=2,
-    )
-    overlay_text(
-        image,
-        _APP_REPO,
-        position=(size[0] - 230, size[1] - 12),
-        font_size=10,
-        color="white",
-        stroke_color="black",
-        stroke_width=1,
     )
 
 

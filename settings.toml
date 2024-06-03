@@ -22,6 +22,9 @@
   #   height = 480
   #   image_path = "images/samples"
   #   delay = 600
+  #   show_date = true
+  #   show_time = false
+  #   show_watermark = false
   # [outputs.1]
   #   ...
   # [outputs.2]
