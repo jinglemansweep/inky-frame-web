@@ -3,8 +3,10 @@ FROM python:3.10-bullseye
 ARG user="user"
 ARG uid="1001"
 
+VOLUME /data
+
 ENV PYTHONUNBUFFERED=1
-ENV SLEEP_DELAY=3600
+ENV INKYFRAMEWEB_PATHS__IMAGES=/data/images
 
 RUN useradd -rm -d /home/${user} -s /bin/bash -u ${uid} ${user}
 
