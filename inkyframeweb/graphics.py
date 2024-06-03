@@ -6,10 +6,10 @@ from typing import List, Optional
 from flask import send_file, make_response
 from PIL import Image, ImageDraw, ImageFont
 from werkzeug.http import generate_etag
-from . import _APP_TITLE
+from . import _APP_TITLE, _APP_VERSION
 
 DATE_POSITION = (20, 20)
-TIME_POSITION = (20, 120)
+TIME_POSITION = (20, 80)
 
 
 def glob_images(
@@ -134,4 +134,5 @@ def render_image(
 def build_response(image_bytes: io.BytesIO, mimetype: str = "image/jpeg"):
     response = make_response(send_file(image_bytes, mimetype=mimetype))
     response.set_etag(generate_etag(image_bytes.getvalue()))
+    response.headers["X-Renderer"] = f"{_APP_TITLE} v{_APP_VERSION}"
     return response
