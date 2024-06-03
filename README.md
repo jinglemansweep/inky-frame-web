@@ -18,3 +18,25 @@ Web-based remote photo frame slideshow and gallery manager for use with e-ink di
 - :sunny: Weather summary and next hour forecast
 - :incoming_envelope: Announcements and notifications via [MQTT](https://en.wikipedia.org/wiki/MQTT)
 - :satellite: Remote control via MQTT and [Home Assistant](https://www.home-assistant.io/)
+
+## Configuration
+
+Project configuration is provided using [Dynaconf](https://www.dynaconf.com/), meaning that configuration can be provided using one or more TOML files, but can also be overridden at runtime using environment variables. For more information, see [`config.py`](./inkyframeweb/config.py).
+
+The provided [`settings.toml`](./settings.toml) details all the available options, but they are all commented out. The preferred method of configuration is to override any settings by creating a `settings.local.toml` and/or a `secrets.toml` (for sensitive values). Both of these files, if they exist, will be used, but should not be stored in source control and are therefore ignored using `.gitignore`.
+
+## Development
+
+Create a Python 3.x virtual environment, and install project dependencies:
+
+    python3 -m venv venv
+    . venv/bin/activate
+    pip install --upgrade pip poetry
+    poetry install
+
+## Running
+
+To run the project:
+
+    . venv/bin/activate
+    python3 -m inkyframeweb
