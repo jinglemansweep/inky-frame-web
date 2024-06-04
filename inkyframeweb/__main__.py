@@ -1,7 +1,6 @@
 import logging
-from datetime import datetime
 from dynaconf import Dynaconf
-from flask import Flask, jsonify, redirect
+from flask import Flask, jsonify, redirect, request
 from pathlib import Path
 from typing import List
 from . import _APP_NAME, _APP_TITLE, _APP_VERSION
@@ -33,11 +32,8 @@ for output in config.outputs.values():
     image_files = glob_images(Path(output.image_path))
     output_display = OutputDisplay(
         image_files,
-        (int(output.width), int(output.height)),
-        output.delay,
         output.show_date,
         output.show_time,
-        output.show_watermark,
     )
     logger.info(f"Output Display: {output_display}")
     output_displays.append(output_display)
@@ -53,18 +49,18 @@ def handle_output(output: str):
     global slideshows
     if output not in config.outputs:
         return "Output not found", 404
+    width = int(request.args.get("w", config.default.image_width))
+    height = int(request.args.get("h", config.default.image_height))
+    image_size = (width, height)
     output_idx = int(output)
     output_display = output_displays[output_idx]
-    if output_display.should_advance(int(datetime.now().timestamp())):
-        logger.info(f"Advancing Display: {output_display}")
-        output_display.next()
+    output_display.next()
     image_bytes = render_image(
         output_display.image_file,
         config,
-        output_display.image_size,
+        image_size,
         output_display.show_date,
         output_display.show_time,
-        output_display.show_watermark,
     )
     return build_response(image_bytes)
 

@@ -1,6 +1,7 @@
 [general]
   # debug = false
   # log_level = "debug" # info, debug
+  # demo_mode = false
 
 [web]
   # host = "0.0.0.0"
@@ -10,26 +11,19 @@
   # date_format = "%d %B %Y"
   # time_format = "%H:%M"
 
-[display]
-  # Inky Frame 7.3: 800w x 480h
-  # width = 800
-  # height = 480
+[defaults]
+  # image_width = 800
+  # image_height = 480
 
 [outputs]
   # [outputs.0]
-  #   name = "inkyframe7"
-  #   width = 800
-  #   height = 480
   #   image_path = "images/samples"
-  #   delay = 600
-  #   show_date = true
+  #   show_date = false
   #   show_time = false
-  #   show_watermark = false
   # [outputs.1]
   #   ...
   # [outputs.2]
   #   ...
-
 
 [mqtt]
   # host = "hass.local"

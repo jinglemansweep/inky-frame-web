@@ -103,8 +103,8 @@ def overlay_watermark(image: Image.Image, size: tuple[int, int]) -> None:
     overlay_text(
         image,
         _APP_TITLE,
-        position=(size[0] - 120, size[1] - 18),
-        font_size=14,
+        position=(size[0] - 200, size[1] - 28),
+        font_size=24,
         color="yellow",
         stroke_color="black",
         stroke_width=2,
@@ -115,9 +115,8 @@ def render_image(
     image_file: Path,
     config: Dynaconf,
     size: tuple[int, int],
-    show_date: bool = True,
-    show_time: bool = True,
-    show_watermark: bool = True,
+    show_date: bool = False,
+    show_time: bool = False,
 ) -> io.BytesIO:
     # Load and resize image
     image = load_and_resize_image(image_file, size)
@@ -127,7 +126,7 @@ def render_image(
     if show_time:
         overlay_time(image, size, config.locale.time_format)
     # Overlay watermark
-    if show_watermark:
+    if config.general.demo_mode:
         overlay_watermark(image, size)
     # Return image bytes
     return pil_to_bytes(image, "JPEG", False, 50)
