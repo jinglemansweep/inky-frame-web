@@ -10,6 +10,7 @@ import urequests as requests
 from network_manager import NetworkManager
 
 import config
+import secrets
 
 # from picographics import PicoGraphics, DISPLAY_INKY_FRAME as DISPLAY      # 5.7"
 # from picographics import PicoGraphics, DISPLAY_INKY_FRAME_4 as DISPLAY  # 4.0"
@@ -77,15 +78,17 @@ while True:
         now = time.localtime(time.time() + tz_seconds)
         year = now[0]
 
-        if year < 2030:
+        if year < 2024:
             connected = False
             network_manager = NetworkManager(
-                config.COUNTRY, status_handler=network_status_handler, client_timeout=60
+                secrets.WIFI_COUNTRY,
+                status_handler=network_status_handler,
+                client_timeout=60,
             )
             t_start = time.time()
             try:
                 uasyncio.get_event_loop().run_until_complete(
-                    network_manager.client(config.SSID, config.PSK)
+                    network_manager.client(secrets.WIFI_SSID, secrets.WIFI_PSK)
                 )
                 connected = True
             except RuntimeError:
