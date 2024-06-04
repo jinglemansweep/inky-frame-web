@@ -22,6 +22,34 @@ tz_seconds = tz_offset * 3600
 
 inky_frame.pcf_to_pico_rtc()
 
+sd_spi = machine.SPI(
+    0,
+    sck=machine.Pin(18, machine.Pin.OUT),
+    mosi=machine.Pin(19, machine.Pin.OUT),
+    miso=machine.Pin(16, machine.Pin.OUT),
+)
+sd = sdcard.SDCard(sd_spi, machine.Pin(22))
+uos.mount(sd, "/sd")
+gc.collect()
+
+graphics = PicoGraphics(DISPLAY)
+WIDTH, HEIGHT = graphics.get_bounds()
+
+BASE_URL = config.ENDPOINT_URL
+DISPLAY_ID = config.DISPLAY_ID
+SLEEP_MINS = config.SLEEP_MINS
+URL = "{0}/outputs/{1}?w={2}&h={3}".format(BASE_URL, DISPLAY_ID, WIDTH, HEIGHT)
+
+print("")
+print("Configuration:")
+print("")
+print("  Display Size:   {0} x {1}".format(WIDTH, HEIGHT))
+print("  Base URL:       {0}".format(BASE_URL))
+print("  Display ID:     {0}".format(DISPLAY_ID))
+print("  Endpoint URL:   {0}".format(URL))
+print("  Sleep (Mins):   {0}".format(SLEEP_MINS))
+print("")
+
 
 def network_status_handler(mode, status, ip):
     print(
@@ -42,24 +70,6 @@ while True:
     if woken_by_rtc or woken_by_button:
 
         print("Awake! RTC: {0} | Button: {1}".format(woken_by_rtc, woken_by_button))
-
-        graphics = PicoGraphics(DISPLAY)
-        WIDTH, HEIGHT = graphics.get_bounds()
-
-        BASE_URL = config.ENDPOINT_URL
-        DISPLAY_ID = config.DISPLAY_ID
-        SLEEP_MINS = config.SLEEP_MINS
-        URL = "{0}/outputs/{1}?w={2}&h={3}".format(BASE_URL, DISPLAY_ID, WIDTH, HEIGHT)
-
-        print("")
-        print("Configuration:")
-        print("")
-        print("  Display Size:   {0} x {1}".format(WIDTH, HEIGHT))
-        print("  Base URL:       {0}".format(BASE_URL))
-        print("  Display ID:     {0}".format(DISPLAY_ID))
-        print("  Endpoint URL:   {0}".format(URL))
-        print("  Sleep (Mins):   {0}".format(SLEEP_MINS))
-        print("")
 
         graphics.set_pen(1)
         graphics.clear()
@@ -90,17 +100,7 @@ while True:
             else:
                 graphics.text("Failed to connect!", 0, 40)
 
-        sd_spi = machine.SPI(
-            0,
-            sck=machine.Pin(18, machine.Pin.OUT),
-            mosi=machine.Pin(19, machine.Pin.OUT),
-            miso=machine.Pin(16, machine.Pin.OUT),
-        )
-        sd = sdcard.SDCard(sd_spi, machine.Pin(22))
-        uos.mount(sd, "/sd")
-        gc.collect()
-
-        print("Downloading image...")
+        print("Downloading Image...")
         res = requests.get(url=URL)
         etag = res.headers["ETag"]
         print("ETag: {0}".format(etag))
