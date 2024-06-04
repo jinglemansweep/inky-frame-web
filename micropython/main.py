@@ -1,62 +1,63 @@
+import gc
+import inky_frame
+import jpegdec
+import machine
+import sdcard
 import time
 import uasyncio
-import config
-import inky_frame
+import uos
 from network_manager import NetworkManager
+from urllib import urequest
+
+import config
 
 # from picographics import PicoGraphics, DISPLAY_INKY_FRAME as DISPLAY      # 5.7"
 # from picographics import PicoGraphics, DISPLAY_INKY_FRAME_4 as DISPLAY  # 4.0"
 from picographics import PicoGraphics, DISPLAY_INKY_FRAME_7 as DISPLAY  # 7.3"
 
-# Set tz_offset to be the number of hours off of UTC for your local zone.
 # Examples:  tz_offset = -7 # Pacific time (PST)
 #            tz_offset =  1 # CEST (Paris)
 tz_offset = 1
 tz_seconds = tz_offset * 3600
 
-# Sync the Inky (always on) RTC to the Pico W so that "time.localtime()" works.
 inky_frame.pcf_to_pico_rtc()
 
-# Avoid running code unless we've been triggered by an event
-# Keeps this example from locking up Thonny when we want to tweak the code
+
+def network_status_handler(mode, status, ip):
+    print("NETWORK", mode, status, ip)
+
+
 if inky_frame.woken_by_rtc() or inky_frame.woken_by_button():
 
-    print("AWAKE")
+    print("Awake!")
 
     graphics = PicoGraphics(DISPLAY)
     WIDTH, HEIGHT = graphics.get_bounds()
 
+    BASE_URL = config.ENDPOINT_URL
+    DISPLAY_ID = config.DISPLAY_ID
+    SLEEP_MINS = config.SLEEP_MINS
+    URL = "{0}/outputs/{1}?w={2}&h={3}".format(BASE_URL, DISPLAY_ID, WIDTH, HEIGHT)
+
+    print("")
+    print("DISPLAY SIZE:   {0} x {1}".format(WIDTH, HEIGHT))
+    print("BASE URL:       {0}".format(BASE_URL))
+    print("DISPLAY ID:     {0}".format(DISPLAY_ID))
+    print("URL:            {0}".format(URL))
+    print("SLEEP MINS:     {0}".format(SLEEP_MINS))
+    print("")
+
     graphics.set_pen(1)
     graphics.clear()
 
-    # Look, just because this is an RTC demo,
-    # doesn't mean we can't make it rainbow.
-    for x in range(WIDTH):
-        h = x / WIDTH
-        p = graphics.create_pen_hsv(h, 1.0, 1.0)
-        graphics.set_pen(p)
-        graphics.line(x, 0, x, HEIGHT)
+    now = time.localtime(time.time() + tz_seconds)
+    year = now[0]
 
-    graphics.set_pen(0)
-    graphics.rectangle(0, 0, WIDTH, 14)
-    graphics.set_pen(1)
-    graphics.text("Inky Frame", 1, 0)
-    graphics.set_pen(0)
-
-    def status_handler(mode, status, ip):
-        print(mode, status, ip)
-
-    year, month, day, hour, minute, second, dow, _ = time.localtime(
-        time.time() + tz_seconds
-    )
-
-    # Connect to the network and get the time if it's not set
-    if year < 2023:
+    if year < 2030:
         connected = False
         network_manager = NetworkManager(
-            config.COUNTRY, status_handler=status_handler, client_timeout=60
+            config.COUNTRY, status_handler=network_status_handler, client_timeout=60
         )
-
         t_start = time.time()
         try:
             uasyncio.get_event_loop().run_until_complete(
@@ -68,38 +69,47 @@ if inky_frame.woken_by_rtc() or inky_frame.woken_by_button():
         t_end = time.time()
 
         if connected:
-            print("CONNECTED")
-
+            print("Network Connected!")
             inky_frame.set_time()
-            print("NTP")
-
-            graphics.text("Setting time from network...", 0, 40)
-            graphics.text(f"Connection took: {t_end-t_start}s", 0, 60)
+            # graphics.text("Setting time from network...", 0, 40)
+            # graphics.text(f"Connection took: {t_end-t_start}s", 0, 60)
         else:
             graphics.text("Failed to connect!", 0, 40)
 
-    # Display the date and time
-    year, month, day, hour, minute, second, dow, _ = time.localtime(
-        time.time() + tz_seconds
+    sd_spi = machine.SPI(
+        0,
+        sck=machine.Pin(18, machine.Pin.OUT),
+        mosi=machine.Pin(19, machine.Pin.OUT),
+        miso=machine.Pin(16, machine.Pin.OUT),
     )
+    sd = sdcard.SDCard(sd_spi, machine.Pin(22))
+    uos.mount(sd, "/sd")
+    gc.collect()
 
-    date_time = f"{year:04}/{month:02}/{day:02} {hour:02}:{minute:02}"
+    print("Downloading image...")
+    socket = urequest.urlopen(URL)
 
-    graphics.set_font("bitmap8")
+    temp_file = "/sd/image.jpg"
+    data = bytearray(1024)
+    with open(temp_file, "wb") as f:
+        while True:
+            if socket.readinto(data) == 0:
+                break
+            f.write(data)
+    socket.close()
+    gc.collect()
 
-    text_scale = 8 if WIDTH == 800 else 6
-    text_height = 8 * text_scale
+    jpeg = jpegdec.JPEG(graphics)
+    gc.collect()
 
-    offset_left = (WIDTH - graphics.measure_text(date_time, scale=text_scale)) // 2
-    offset_top = (HEIGHT - text_height) // 2
-
-    graphics.set_pen(graphics.create_pen(50, 50, 50))
-    graphics.text(date_time, offset_left + 2, offset_top + 2, scale=text_scale)
     graphics.set_pen(1)
-    graphics.text(date_time, offset_left, offset_top, scale=text_scale)
+    graphics.clear()
 
-    print("RENDER")
+    jpeg.open_file(temp_file)
+    jpeg.decode()
+
+    print("Rendering Display...")
     graphics.update()
 
-    print("SLEEP")
-    inky_frame.sleep_for(1)
+    print("Sleeping for {0} mins".format(SLEEP_MINS))
+    inky_frame.sleep_for(SLEEP_MINS)
