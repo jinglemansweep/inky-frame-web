@@ -1,5 +1,6 @@
 venv*
 micropython/lib
+micropython/secrets.py
 __pycache__
 settings.*.toml
 .env

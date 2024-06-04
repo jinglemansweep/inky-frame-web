@@ -1,0 +1,3 @@
+WIFI_COUNTRY = ""
+WIFI_SSID = ""
+WIFI_PSK = ""

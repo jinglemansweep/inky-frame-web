@@ -45,13 +45,13 @@ def resize_image_aspect(image: Image.Image, size: tuple[int, int]) -> Image.Imag
     else:
         # The target image is taller than the original image, so we need to add black areas on the top and bottom
         new_width = target_width
-        new_height = target_width / aspect_ratio
+        new_height = int(target_width / aspect_ratio)
         left = 0
         top = (target_height - new_height) // 2
 
     new_image = Image.new("RGB", size, color="black")
     new_image.paste(
-        image.resize((int(new_width), int(new_height)), Image.LANCZOS),
+        image.resize((int(new_width), int(new_height)), Image.LANCZOS),  # type: ignore[attr-defined]
         (int(left), int(top)),
     )
     return new_image
