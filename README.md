@@ -20,15 +20,17 @@ Web-based remote photo frame slideshow and gallery manager for use with e-ink di
 - :incoming_envelope: Announcements and notifications via [MQTT](https://en.wikipedia.org/wiki/MQTT)
 - :satellite: Remote control via MQTT and [Home Assistant](https://www.home-assistant.io/)
 
-## Usage
+## Configuration
+
+Project configuration is provided using [Dynaconf](https://www.dynaconf.com/), meaning that configuration can be provided using one or more TOML files, but can also be overridden at runtime using environment variables. For more information, see [`config.py`](./inkyframeweb/config.py).
+
+The provided [`settings.toml`](./settings.toml) details all the available options, but they are all commented out. The preferred method of configuration is to override any settings by creating a `settings.local.toml` and/or a `secrets.toml` (for sensitive values), or by setting the equivalent `INKYFRAMEWEB_` environment variables.
 
 ### Outputs
 
-By default, a single output display is configured based on the dimensions of the [Inky Frame 7](https://shop.pimoroni.com/products/inky-frame-7-3):
+TODO: Explain multiple outputs
 
-    name:    inkyframe7
-    width:   800
-    height:  480
+## Server (Python)
 
 ### Docker
 
@@ -43,32 +45,16 @@ Multiple display outputs can be specified using envionment variables. Remember o
 
     docker run -it --name inkyframeweb \
       -v ${PWD}/images/samples:/data/images \
-      -e INKYFRAMEWEB_OUTPUTS__0__NAME=inkyframe7 \
-      -e INKYFRAMEWEB_OUTPUTS__0__WIDTH=800 \
-      -e INKYFRAMEWEB_OUTPUTS__0__HEIGHT=480 \
-      -e INKYFRAMEWEB_OUTPUTS__0__DELAY=600 \
+      -e INKYFRAMEWEB_GENERAL__DEMO_MODE=true \
       -e INKYFRAMEWEB_OUTPUTS__0__IMAGE_PATH=images/samples \
       -e INKYFRAMEWEB_OUTPUTS__0__SHOW_DATE=true \
-      -e INKYFRAMEWEB_OUTPUTS__0__SHOW_TIME=false \
-      -e INKYFRAMEWEB_OUTPUTS__0__SHOW_WATERMARK=false \
-      -e INKYFRAMEWEB_OUTPUTS__1__NAME=inkyframe5 \
-      -e INKYFRAMEWEB_OUTPUTS__1__WIDTH=600 \
-      -e INKYFRAMEWEB_OUTPUTS__1__HEIGHT=320 \
-      -e INKYFRAMEWEB_OUTPUTS__1__DELAY=600 \
       -e INKYFRAMEWEB_OUTPUTS__1__IMAGE_PATH=images/samples \
       -e INKYFRAMEWEB_OUTPUTS__1__SHOW_DATE=true \
       -e INKYFRAMEWEB_OUTPUTS__1__SHOW_TIME=true \
-      -e INKYFRAMEWEB_OUTPUTS__1__SHOW_WATERMARK=true \
       -p 5665:5665 \
       ghcr.io/jinglemansweep/inky-frame-web:main
 
-## Configuration
-
-Project configuration is provided using [Dynaconf](https://www.dynaconf.com/), meaning that configuration can be provided using one or more TOML files, but can also be overridden at runtime using environment variables. For more information, see [`config.py`](./inkyframeweb/config.py).
-
-The provided [`settings.toml`](./settings.toml) details all the available options, but they are all commented out. The preferred method of configuration is to override any settings by creating a `settings.local.toml` and/or a `secrets.toml` (for sensitive values). Both of these files, if they exist, will be used, but should not be stored in source control and are therefore ignored using `.gitignore`.
-
-## Development
+### Native (Non-Docker)
 
 Create a Python 3.x virtual environment, and install project dependencies:
 
@@ -77,12 +63,16 @@ Create a Python 3.x virtual environment, and install project dependencies:
     pip install --upgrade pip poetry
     poetry install
 
-## Running
+Create a `settings.local.toml` configuration file overriding any values required, or set the equivalent environment variables.
 
 To run the project:
 
     . venv/bin/activate
     python3 -m inkyframeweb
+
+## Client (MicroPython)
+
+TODO
 
 ## Acknowledgements
 
