@@ -24,9 +24,37 @@ def glob_images(
 
 def load_and_resize_image(image_path: Path, size: tuple[int, int]) -> Image.Image:
     image = Image.open(image_path)
-    image = image.resize(size)
+    image = resize_image_aspect(image, size)
     image = image.convert("RGB")
     return image
+
+
+def resize_image_aspect(image: Image.Image, size: tuple[int, int]) -> Image.Image:
+    original_width, original_height = image.size
+    aspect_ratio = original_width / original_height
+
+    target_width, target_height = size
+    target_aspect_ratio = target_width / target_height
+
+    if target_aspect_ratio > aspect_ratio:
+        # The target image is wider than the original image, so we need to add black areas on the sides
+        new_width = target_height * aspect_ratio
+        new_height = target_height
+        left = (target_width - new_width) // 2
+        top = 0
+    else:
+        # The target image is taller than the original image, so we need to add black areas on the top and bottom
+        new_width = target_width
+        new_height = target_width / aspect_ratio
+        left = 0
+        top = (target_height - new_height) // 2
+
+    new_image = Image.new("RGB", size, color="black")
+    new_image.paste(
+        image.resize((int(new_width), int(new_height)), Image.LANCZOS),
+        (int(left), int(top)),
+    )
+    return new_image
 
 
 def bytes_to_pil(image_bytes):
