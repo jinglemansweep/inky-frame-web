@@ -1,4 +1,5 @@
 venv*
+micropython/lib
 __pycache__
 settings.*.toml
 .env

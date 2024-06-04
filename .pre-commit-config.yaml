@@ -13,6 +13,7 @@ repos:
     rev: v1.7.1
     hooks:
       - id: mypy
+        exclude: micropython
         args: [--ignore-missing-imports, --no-warn-return-any]
         additional_dependencies: [types-PyYAML, types-toml]
   - repo: https://github.com/PyCQA/flake8

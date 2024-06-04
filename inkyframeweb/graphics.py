@@ -34,10 +34,12 @@ def bytes_to_pil(image_bytes):
 
 
 def pil_to_bytes(
-    image: Image.Image, image_format: str, progressive: bool
+    image: Image.Image, image_format: str, progressive: bool, quality: int = 95
 ) -> io.BytesIO:
     image_bytes = io.BytesIO()
-    image.save(image_bytes, format=image_format, progressive=progressive)
+    image.save(
+        image_bytes, format=image_format, progressive=progressive, quality=quality
+    )
     image_bytes.seek(0)
     return image_bytes
 
@@ -128,7 +130,7 @@ def render_image(
     if show_watermark:
         overlay_watermark(image, size)
     # Return image bytes
-    return pil_to_bytes(image, "JPEG", False)
+    return pil_to_bytes(image, "JPEG", False, 50)
 
 
 def build_response(image_bytes: io.BytesIO, mimetype: str = "image/jpeg"):
