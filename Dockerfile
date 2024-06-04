@@ -4,9 +4,7 @@ ARG user="user"
 ARG uid="1001"
 
 VOLUME /data
-
 ENV PYTHONUNBUFFERED=1
-ENV INKYFRAMEWEB_PATHS__IMAGES=/data/images
 
 RUN useradd -rm -d /home/${user} -s /bin/bash -u ${uid} ${user}
 

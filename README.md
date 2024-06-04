@@ -9,13 +9,12 @@ Web-based remote photo frame slideshow and gallery manager for use with e-ink di
 ## Features
 
 - :camera: Photo and image slideshow management
-- :calendar: Clock and Calendar overlay
-- :calendar: Calendar overlay
+- :cinema: Multiple display output support
+- :calendar: Customisable date and time overlays
 - :snake: Written with [Python](https://www.python.org/), [Flask](https://flask.palletsprojects.com/) and [MicroPython](https://micropython.org/)
 
 ## Coming Soon
 
-- :cinema: Multiple display support
 - :radio_button: Hardware button support
 - :sunny: Weather summary and next hour forecast
 - :incoming_envelope: Announcements and notifications via [MQTT](https://en.wikipedia.org/wiki/MQTT)
@@ -23,12 +22,43 @@ Web-based remote photo frame slideshow and gallery manager for use with e-ink di
 
 ## Usage
 
+### Outputs
+
+By default, a single output display is configured based on the dimensions of the [Inky Frame 7](https://shop.pimoroni.com/products/inky-frame-7-3):
+
+    name:    inkyframe7
+    width:   800
+    height:  480
+
 ### Docker
 
 Pull and start the container image specifying a port and a volume for your photos/images:
 
     docker run -d --name inkyframeweb \
       -v ${PWD}/images/samples:/data/images \
+      -p 5665:5665 \
+      ghcr.io/jinglemansweep/inky-frame-web:main
+
+Multiple display outputs can be specified using envionment variables. Remember outputs are zero-based:
+
+    docker run -it --name inkyframeweb \
+      -v ${PWD}/images/samples:/data/images \
+      -e INKYFRAMEWEB_OUTPUTS__0__NAME=inkyframe7 \
+      -e INKYFRAMEWEB_OUTPUTS__0__WIDTH=800 \
+      -e INKYFRAMEWEB_OUTPUTS__0__HEIGHT=480 \
+      -e INKYFRAMEWEB_OUTPUTS__0__DELAY=600 \
+      -e INKYFRAMEWEB_OUTPUTS__0__IMAGE_PATH=images/samples \
+      -e INKYFRAMEWEB_OUTPUTS__0__SHOW_DATE=true \
+      -e INKYFRAMEWEB_OUTPUTS__0__SHOW_TIME=false \
+      -e INKYFRAMEWEB_OUTPUTS__0__SHOW_WATERMARK=false \
+      -e INKYFRAMEWEB_OUTPUTS__1__NAME=inkyframe5 \
+      -e INKYFRAMEWEB_OUTPUTS__1__WIDTH=600 \
+      -e INKYFRAMEWEB_OUTPUTS__1__HEIGHT=320 \
+      -e INKYFRAMEWEB_OUTPUTS__1__DELAY=600 \
+      -e INKYFRAMEWEB_OUTPUTS__1__IMAGE_PATH=images/samples \
+      -e INKYFRAMEWEB_OUTPUTS__1__SHOW_DATE=true \
+      -e INKYFRAMEWEB_OUTPUTS__1__SHOW_TIME=true \
+      -e INKYFRAMEWEB_OUTPUTS__1__SHOW_WATERMARK=true \
       -p 5665:5665 \
       ghcr.io/jinglemansweep/inky-frame-web:main
 
