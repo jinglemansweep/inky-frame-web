@@ -114,8 +114,6 @@ def render_image(
     # Load and resize image
     image = load_and_resize_image(image_file, size)
     # Build overlay
-
-    print("OVERLAY FORMAT", overlay_format)
     if not overlay_format == "":
         now = datetime.now()
         date_text = now.strftime(config.locale.date_format)
