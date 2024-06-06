@@ -15,6 +15,11 @@ VALIDATORS = [
     # Defaults
     Validator("DEFAULT__IMAGE_WIDTH", default=800, cast=int),
     Validator("DEFAULT__IMAGE_HEIGHT", default=480, cast=int),
+    Validator("DEFAULT__OVERLAY_X", default=0, cast=int),
+    Validator("DEFAULT__OVERLAY_Y", default=0, cast=int),
+    Validator("DEFAULT__OVERLAY_SIZE", default=16, cast=int),
+    Validator("DEFAULT__OVERLAY_FORMAT", default="Test!", cast=str),
+    Validator("DEFAULT__OVERLAY_COLOR", default="white", cast=str),
     # Outputs
     Validator(
         "OUTPUTS__0__IMAGE_PATH",
@@ -22,14 +27,29 @@ VALIDATORS = [
         cast=Path,
     ),
     Validator(
-        "OUTPUTS__0__SHOW_DATE",
-        default=False,
-        cast=bool,
+        "OUTPUTS__0__OVERLAY_X",
+        default=0,
+        cast=int,
     ),
     Validator(
-        "OUTPUTS__0__SHOW_TIME",
-        default=False,
-        cast=bool,
+        "OUTPUTS__0__OVERLAY_Y",
+        default=0,
+        cast=int,
+    ),
+    Validator(
+        "OUTPUTS__0__OVERLAY_SIZE",
+        default=14,
+        cast=int,
+    ),
+    Validator(
+        "OUTPUTS__0__OVERLAY_FORMAT",
+        default="{date} {time} [{current}/{total}]",
+        cast=str,
+    ),
+    Validator(
+        "OUTPUTS__0__OVERLAY_COLOR",
+        default="white",
+        cast=str,
     ),
     # MQTT
     Validator(

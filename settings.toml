@@ -14,12 +14,20 @@
 [defaults]
   # image_width = 800
   # image_height = 480
+  # overlay_x = 0
+  # overlay_y = 0
+  # overlay_size = 14
+  # overlay_format = ""
+  # overlay_color = "white"
 
 [outputs]
   # [outputs.0]
   #   image_path = "images/samples"
-  #   show_date = false
-  #   show_time = false
+  #   overlay_x = 0
+  #   overlay_y = 0
+  #   overlay_size = 16
+  #   overlay_format = "" # blank = disabled
+  #   overlay_color = "white" # black, red, green etc
   # [outputs.1]
   #   ...
   # [outputs.2]

@@ -32,8 +32,11 @@ for output in config.outputs.values():
     image_files = glob_images(Path(output.image_path))
     output_display = OutputDisplay(
         image_files,
-        output.show_date,
-        output.show_time,
+        output.get("overlay_x", config.default.overlay_x),
+        output.get("overlay_y", config.default.overlay_y),
+        output.get("overlay_size", config.default.overlay_size),
+        output.get("overlay_format", config.default.overlay_format),
+        output.get("overlay_color", config.default.overlay_color),
     )
     logger.info(f"Output Display: {output_display}")
     output_displays.append(output_display)
@@ -59,8 +62,14 @@ def handle_output(output: str):
         output_display.image_file,
         config,
         image_size,
-        output_display.show_date,
-        output_display.show_time,
+        output_display.image_iter,
+        output_display.image_index,
+        output_display.image_count,
+        output_display.overlay_x,
+        output_display.overlay_y,
+        output_display.overlay_size,
+        output_display.overlay_format,
+        output_display.overlay_color,
     )
     return build_response(image_bytes)
 

@@ -98,64 +98,44 @@ def overlay_text(
     )
 
 
-def overlay_date(image: Image.Image, size: tuple[int, int], date_format: str) -> None:
-    now = datetime.now()
-    overlay_text(
-        image,
-        now.strftime(date_format),
-        position=DATE_POSITION,
-        font_size=48,
-        align="center",
-        color="white",
-        stroke_color="black",
-        stroke_width=4,
-    )
-
-
-def overlay_time(image: Image.Image, size: tuple[int, int], time_format: str) -> None:
-    now = datetime.now()
-    overlay_text(
-        image,
-        now.strftime(time_format),
-        position=TIME_POSITION,
-        font_size=72,
-        align="center",
-        color="white",
-        stroke_color="black",
-        stroke_width=4,
-    )
-
-
-def overlay_watermark(image: Image.Image, size: tuple[int, int]) -> None:
-    # Overlay watermark
-    overlay_text(
-        image,
-        _APP_TITLE,
-        position=(size[0] - 200, size[1] - 28),
-        font_size=24,
-        color="yellow",
-        stroke_color="black",
-        stroke_width=2,
-    )
-
-
 def render_image(
     image_file: Path,
     config: Dynaconf,
     size: tuple[int, int],
-    show_date: bool = False,
-    show_time: bool = False,
+    image_iter: int,
+    image_index: int,
+    image_count: int,
+    overlay_x: int,
+    overlay_y: int,
+    overlay_size: int,
+    overlay_format: str,
+    overlay_color: str = "white",
 ) -> io.BytesIO:
     # Load and resize image
     image = load_and_resize_image(image_file, size)
-    # Overlay calendar and clock
-    if show_date:
-        overlay_date(image, size, config.locale.date_format)
-    if show_time:
-        overlay_time(image, size, config.locale.time_format)
-    # Overlay watermark
-    if config.general.demo_mode:
-        overlay_watermark(image, size)
+    # Build overlay
+
+    print("OVERLAY FORMAT", overlay_format)
+    if not overlay_format == "":
+        now = datetime.now()
+        date_text = now.strftime(config.locale.date_format)
+        time_text = now.strftime(config.locale.time_format)
+        text = (
+            overlay_format.replace("{date}", date_text)
+            .replace("{time}", time_text)
+            .replace("{loops}", str(image_iter + 1))
+            .replace("{current}", str(image_index + 1))
+            .replace("{total}", str(image_count))
+        )
+        overlay_text(
+            image,
+            text,
+            (overlay_x, overlay_y),
+            font_size=overlay_size,
+            color=overlay_color,
+            stroke_color="black",
+            stroke_width=2,
+        )
     # Return image bytes
     return pil_to_bytes(image, "JPEG", False, 50)
 
