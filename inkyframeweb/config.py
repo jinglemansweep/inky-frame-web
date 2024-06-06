@@ -27,6 +27,11 @@ VALIDATORS = [
         cast=Path,
     ),
     Validator(
+        "OUTPUTS__0__IMAGE_SHUFFLE",
+        default=False,
+        cast=bool,
+    ),
+    Validator(
         "OUTPUTS__0__OVERLAY_X",
         default=0,
         cast=int,

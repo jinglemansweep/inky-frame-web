@@ -1,3 +1,4 @@
+import random
 from pathlib import Path
 from typing import List
 
@@ -6,6 +7,7 @@ class OutputDisplay:
     def __init__(
         self,
         image_files: List[Path],
+        image_shuffle: bool,
         overlay_x: int,
         overlay_y: int,
         overlay_size: int,
@@ -13,6 +15,9 @@ class OutputDisplay:
         overlay_color: str,
     ) -> None:
         self.image_files = image_files
+        self.image_shuffle = image_shuffle
+        if image_shuffle:
+            random.shuffle(self.image_files)
         self.image_count = len(image_files)
         self.image_index = 0
         self.image_iter = 0
@@ -35,6 +40,8 @@ class OutputDisplay:
         return (
             "<OutputDisplay items="
             + str(len(self.image_files))
+            + " shuffle="
+            + str(self.image_shuffle)
             + " index="
             + str(self.image_index)
             + " image_iter="

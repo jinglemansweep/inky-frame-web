@@ -23,6 +23,7 @@
 [outputs]
   # [outputs.0]
   #   image_path = "images/samples"
+  #   image_shuffle = false
   #   overlay_x = 0
   #   overlay_y = 0
   #   overlay_size = 16

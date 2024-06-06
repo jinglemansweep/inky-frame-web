@@ -32,6 +32,7 @@ for output in config.outputs.values():
     image_files = glob_images(Path(output.image_path))
     output_display = OutputDisplay(
         image_files,
+        output.get("image_shuffle", False),
         output.get("overlay_x", config.default.overlay_x),
         output.get("overlay_y", config.default.overlay_y),
         output.get("overlay_size", config.default.overlay_size),

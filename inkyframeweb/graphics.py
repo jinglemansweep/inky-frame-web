@@ -13,7 +13,8 @@ TIME_POSITION = (20, 80)
 
 
 def glob_images(
-    directory: Path, patterns: List[str] = ["*.jpg", "*.jpeg", "*.png", "*.gif"]
+    directory: Path,
+    patterns: List[str] = ["*.jpg", "*.jpeg", "*.png", "*.gif"],
 ) -> List[Path]:
     # Glob all image files in the directory
     image_files: List[Path] = []
