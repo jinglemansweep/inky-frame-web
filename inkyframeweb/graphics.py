@@ -24,46 +24,18 @@ def glob_images(
 
 
 def load_and_resize_image(
-    image_path: Path, size: tuple[int, int], fill: bool = False
+    image_path: Path, size: tuple[int, int], aspect: str = "zoom"
 ) -> Image.Image:
     image = Image.open(image_path)
-    if fill:
-        image = resize_image_fill(image, size)
+    if aspect == "zoom":
+        image = resize_image_zoom(image, size)
     else:
-        image = resize_image_aspect(image, size)
+        image = resize_image_crop(image, size)
     image = image.convert("RGB")
     return image
 
 
-def resize_image_aspect(image: Image.Image, size: tuple[int, int]) -> Image.Image:
-    original_width, original_height = image.size
-    aspect_ratio = original_width / original_height
-
-    target_width, target_height = size
-    target_aspect_ratio = target_width / target_height
-
-    if target_aspect_ratio > aspect_ratio:
-        # The target image is wider than the original image, so we need to add black areas on the sides
-        new_width = target_height * aspect_ratio
-        new_height = target_height
-        left = (target_width - new_width) // 2
-        top = 0
-    else:
-        # The target image is taller than the original image, so we need to add black areas on the top and bottom
-        new_width = target_width
-        new_height = int(target_width / aspect_ratio)
-        left = 0
-        top = (target_height - new_height) // 2
-
-    new_image = Image.new("RGB", size, color="black")
-    new_image.paste(
-        image.resize((int(new_width), int(new_height)), Image.LANCZOS),  # type: ignore[attr-defined]
-        (int(left), int(top)),
-    )
-    return new_image
-
-
-def resize_image_fill(image: Image.Image, size: tuple[int, int]) -> Image.Image:
+def resize_image_zoom(image: Image.Image, size: tuple[int, int]) -> Image.Image:
     original_width, original_height = image.size
     target_width, target_height = size
     new_image = Image.new("RGB", size, color="black")
@@ -77,6 +49,40 @@ def resize_image_fill(image: Image.Image, size: tuple[int, int]) -> Image.Image:
         new_height = int(original_height * (new_width / original_width))
         image = image.resize((new_width, new_height), Image.LANCZOS)  # type: ignore[attr-defined]
         new_image.paste(image, (0, (target_height - new_height) // 2))
+    return new_image
+
+
+def resize_image_crop(image: Image.Image, size: tuple[int, int]) -> Image.Image:
+    original_width, original_height = image.size
+    target_width, target_height = size
+    new_image = Image.new("RGB", size, color="black")
+    if original_width > original_height:
+        new_width = target_width
+        new_height = int(original_height * (new_width / original_width))
+        image = image.resize((new_width, new_height), Image.LANCZOS)  # type: ignore[attr-defined]
+        new_image.paste(image, (0, (target_height - new_height) // 2))
+    else:
+        new_height = target_height
+        new_width = int(original_width * (new_height / original_height))
+        image = image.resize((new_width, new_height), Image.LANCZOS)  # type: ignore[attr-defined]
+        new_image.paste(image, ((target_width - new_width) // 2, 0))
+    return new_image
+
+
+def resize_image_zoom2(image: Image.Image, size: tuple[int, int]) -> Image.Image:
+    original_width, original_height = image.size
+    target_width, target_height = size
+    new_image = Image.new("RGB", size, color="black")
+    if original_width > original_height:
+        new_width = target_width
+        new_height = int(original_height * (new_width / original_width))
+        image = image.resize((new_width, new_height), Image.LANCZOS)  # type: ignore[attr-defined]
+        new_image.paste(image, (0, (target_height - new_height) // 2))
+    else:
+        new_height = target_height
+        new_width = int(original_width * (new_height / original_height))
+        image = image.resize((new_width, new_height), Image.LANCZOS)  # type: ignore[attr-defined]
+        new_image.paste(image, ((target_width - new_width) // 2, 0))
     return new_image
 
 
@@ -135,7 +141,7 @@ def render_image(
     overlay_color: str = "white",
 ) -> io.BytesIO:
     # Load and resize image
-    image = load_and_resize_image(image_file, size, fill=True)
+    image = load_and_resize_image(image_file, size, aspect="zoom")
     # Build overlay
     if not overlay_format == "":
         now = datetime.now()
