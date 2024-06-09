@@ -23,9 +23,14 @@ def glob_images(
     return image_files
 
 
-def load_and_resize_image(image_path: Path, size: tuple[int, int]) -> Image.Image:
+def load_and_resize_image(
+    image_path: Path, size: tuple[int, int], fill: bool = False
+) -> Image.Image:
     image = Image.open(image_path)
-    image = resize_image_aspect(image, size)
+    if fill:
+        image = resize_image_fill(image, size)
+    else:
+        image = resize_image_aspect(image, size)
     image = image.convert("RGB")
     return image
 
@@ -55,6 +60,23 @@ def resize_image_aspect(image: Image.Image, size: tuple[int, int]) -> Image.Imag
         image.resize((int(new_width), int(new_height)), Image.LANCZOS),  # type: ignore[attr-defined]
         (int(left), int(top)),
     )
+    return new_image
+
+
+def resize_image_fill(image: Image.Image, size: tuple[int, int]) -> Image.Image:
+    original_width, original_height = image.size
+    target_width, target_height = size
+    new_image = Image.new("RGB", size, color="black")
+    if original_width > original_height:
+        new_height = target_height
+        new_width = int(original_width * (new_height / original_height))
+        image = image.resize((new_width, new_height), Image.LANCZOS)  # type: ignore[attr-defined]
+        new_image.paste(image, ((target_width - new_width) // 2, 0))
+    else:
+        new_width = target_width
+        new_height = int(original_height * (new_width / original_width))
+        image = image.resize((new_width, new_height), Image.LANCZOS)  # type: ignore[attr-defined]
+        new_image.paste(image, (0, (target_height - new_height) // 2))
     return new_image
 
 
@@ -113,7 +135,7 @@ def render_image(
     overlay_color: str = "white",
 ) -> io.BytesIO:
     # Load and resize image
-    image = load_and_resize_image(image_file, size)
+    image = load_and_resize_image(image_file, size, fill=True)
     # Build overlay
     if not overlay_format == "":
         now = datetime.now()
