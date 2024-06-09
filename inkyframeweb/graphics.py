@@ -29,61 +29,31 @@ def load_and_resize_image(
     image = Image.open(image_path)
     if aspect == "zoom":
         image = resize_image_zoom(image, size)
-    else:
-        image = resize_image_crop(image, size)
     image = image.convert("RGB")
     return image
 
 
 def resize_image_zoom(image: Image.Image, size: tuple[int, int]) -> Image.Image:
     original_width, original_height = image.size
-    target_width, target_height = size
-    new_image = Image.new("RGB", size, color="black")
-    if original_width > original_height:
-        new_height = target_height
-        new_width = int(original_width * (new_height / original_height))
-        image = image.resize((new_width, new_height), Image.LANCZOS)  # type: ignore[attr-defined]
-        new_image.paste(image, ((target_width - new_width) // 2, 0))
+    new_width, new_height = size
+    # Calculate aspect ratios
+    original_aspect = original_width / original_height
+    new_aspect = new_width / new_height
+    # Determine scaling factor and resize
+    if new_aspect > original_aspect:
+        scale_factor = new_height / original_height
     else:
-        new_width = target_width
-        new_height = int(original_height * (new_width / original_width))
-        image = image.resize((new_width, new_height), Image.LANCZOS)  # type: ignore[attr-defined]
-        new_image.paste(image, (0, (target_height - new_height) // 2))
-    return new_image
-
-
-def resize_image_crop(image: Image.Image, size: tuple[int, int]) -> Image.Image:
-    original_width, original_height = image.size
-    target_width, target_height = size
-    new_image = Image.new("RGB", size, color="black")
-    if original_width > original_height:
-        new_width = target_width
-        new_height = int(original_height * (new_width / original_width))
-        image = image.resize((new_width, new_height), Image.LANCZOS)  # type: ignore[attr-defined]
-        new_image.paste(image, (0, (target_height - new_height) // 2))
-    else:
-        new_height = target_height
-        new_width = int(original_width * (new_height / original_height))
-        image = image.resize((new_width, new_height), Image.LANCZOS)  # type: ignore[attr-defined]
-        new_image.paste(image, ((target_width - new_width) // 2, 0))
-    return new_image
-
-
-def resize_image_zoom2(image: Image.Image, size: tuple[int, int]) -> Image.Image:
-    original_width, original_height = image.size
-    target_width, target_height = size
-    new_image = Image.new("RGB", size, color="black")
-    if original_width > original_height:
-        new_width = target_width
-        new_height = int(original_height * (new_width / original_width))
-        image = image.resize((new_width, new_height), Image.LANCZOS)  # type: ignore[attr-defined]
-        new_image.paste(image, (0, (target_height - new_height) // 2))
-    else:
-        new_height = target_height
-        new_width = int(original_width * (new_height / original_height))
-        image = image.resize((new_width, new_height), Image.LANCZOS)  # type: ignore[attr-defined]
-        new_image.paste(image, ((target_width - new_width) // 2, 0))
-    return new_image
+        scale_factor = new_width / original_width
+    new_size = (int(original_width * scale_factor), int(original_height * scale_factor))
+    image = image.resize(new_size, Image.LANCZOS)  # type: ignore[attr-defined]
+    # Calculate coordinates for cropping
+    left = int((new_size[0] - new_width) / 2)
+    top = int((new_size[1] - new_height) / 2)
+    right = left + new_width
+    bottom = top + new_height
+    # Crop the image to the desired size
+    image = image.crop((left, top, right, bottom))
+    return image
 
 
 def bytes_to_pil(image_bytes):
